@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<meta charset="ISO-8859-1">
+<title>Compare Two Lists</title>
+</head>
+<body>
+<div id="app" >
+  <TABLE BGCOLOR=#FFE4B5 WIDTH=500 BORDER=1>
+    <TR ALIGN="CENTER" CENTER>
+      <TD>
+        <FONT COLOR=FF0000><B>List <INPUT TYPE=text v-model="name1" SIZE=5 VALUE="1" > (one per line):
+      </TD>
+      <TD>
+        <FONT COLOR=FF0000><B>List <INPUT TYPE=text v-model="name2" SIZE=5 VALUE="2"> (one per line):
+      </TD>
+    </TR>
+    <TR ALIGN="CENTER" CENTER>
+      <TD><TEXTAREA NAME="list1" ROWS=10 COLS=20 v-model="text1"></TEXTAREA></TD>
+      <TD><TEXTAREA NAME="list2" ROWS=10 COLS=20 v-model="text2"></TEXTAREA></TD>
+      <td><button v-on:click="compare">Compare</button></td>
+    </TR>
+  </TABLE>
+  
+  </br>
+ 
+ <TABLE WIDTH=800 BGCOLOR=#FFE4B5>
+    <TR ALIGN=CENTER>
+      <TD>{{name1}} ({{set1.length}}):<BR>
+        <TEXTAREA NAME="list1" ROWS=10 COLS=20 v-model="set1Text"></TEXTAREA></TD>
+      <TD>{{name1}} <FONT COLOR="red">only</FONT> ({{onlyset1.length}}):<BR>
+        <TEXTAREA NAME="aOnly" ROWS=10 COLS=20 v-model="onlyset1Text"></TEXTAREA></TD>
+      <TD>{{name1}} <FONT COLOR="red">or</FONT> {{name2}} ({{union.length}}):<BR>
+        <TEXTAREA NAME="union" ROWS=10 COLS=20 v-model="unionText"></TEXTAREA></TD>
+    </TR>
+    <TR ALIGN=CENTER>
+      <TD>{{name2}} ({{set2.length}}):<BR>
+        <TEXTAREA NAME="list2" ROWS=10 COLS=20 v-model="set2Text"></TEXTAREA></TD>
+      <TD>{{name2}} <FONT COLOR="red">only</FONT> ({{onlyset2.length}}):<BR>
+        <TEXTAREA NAME="bOnly" ROWS=10 COLS=20 v-model="onlyset2Text"></TEXTAREA></TD>
+      <TD>{{name1}} <FONT COLOR="red">and</FONT> {{name2}} ({{intersection.length}}):<BR>
+        <TEXTAREA NAME="isect" ROWS=10 COLS=20 v-model="intersectionText"></TEXTAREA></TD>
+    </TR>
+  </TABLE>
+  <BR>Notes:<BR>Comparisons are case-sensitive.<BR>
+  Duplicate entries are removed from each list before processing<BR>
+  and all lists are alphabetically ordered.
+
+  <BR><BR>
+
+</div>
+
+<script>
+new Vue({
+	  el: "#app",
+	  data: {
+	    name1 : '1',
+	    name2 : '2',
+	    text1: '',
+	    text2: '',
+	    union: [],
+	    intersection: [],
+	    set1: [],
+	    set2: [],
+	    onlyset1 : [],
+	    onlyset2 : [],
+	  },
+	  methods: {
+	    compare: function(){
+	     let list1 = this.text1.split("\n").filter(x => x);
+	     let list2 = this.text2.split("\n").filter(x => x);
+	     this.set1 = Array.from(new Set(list1)).sort();
+	     this.set2 = Array.from(new Set(list2)).sort();
+	     this.union = Array.from(new Set([...this.set1, ...this.set2])).sort();
+	     this.intersection = [...this.set1].filter(x => this.set2.includes(x));
+	     this.onlyset1 = this.set1.filter(x => !this.intersection.includes(x));
+	     this.onlyset2 = this.set2.filter(x => !this.intersection.includes(x));
+	    }
+	  },
+	   computed: {
+	   
+	    set1Text: function () {
+	    return this.set1.join("\n");
+	    },
+	    set2Text: function () {
+	     return this.set2.join("\n");
+	    },
+	    unionText: function () {
+	     return this.union.join("\n");
+	    },
+	    intersectionText: function () {
+	     return this.intersection.join("\n");
+	    },
+	    onlyset1Text: function () {
+	     return this.onlyset1.join("\n");
+	    },
+	    onlyset2Text: function () {
+	     return this.onlyset2.join("\n");
+	    }
+	    }
+	})
+</script>
+
+</body>
+</html>
